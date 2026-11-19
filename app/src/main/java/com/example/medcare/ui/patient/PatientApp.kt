@@ -1,0 +1,66 @@
+package com.example.medcare.ui.patient
+
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+
+@Composable
+fun PatientApp() {
+    var selectedTab by remember { mutableStateOf(0) } // 0: Home, 1: Lab, 2: Booking, 3: Profile
+
+    Scaffold(
+        bottomBar = {
+            NavigationBar(
+                containerColor = Color(0xFFFAFAFF),
+                tonalElevation = 8.dp
+            ) {
+                NavigationBarItem(
+                    selected = selectedTab == 0,
+                    onClick = { selectedTab = 0 },
+                    icon = { Icon(Icons.Default.Home, contentDescription = "Trang chủ") },
+                    label = { Text("Trang chủ") }
+                )
+                NavigationBarItem(
+                    selected = selectedTab == 1,
+                    onClick = { selectedTab = 1 },
+                    icon = { Icon(Icons.Default.Science, contentDescription = "Kết quả CLS") },
+                    label = { Text("Kết quả CLS") }
+                )
+                NavigationBarItem(
+                    selected = selectedTab == 2,
+                    onClick = { selectedTab = 2 },
+                    icon = { Icon(Icons.Default.CalendarToday, contentDescription = "Đặt khám") },
+                    label = { Text("Đặt khám") }
+                )
+                NavigationBarItem(
+                    selected = selectedTab == 3,
+                    onClick = { selectedTab = 3 },
+                    icon = { Icon(Icons.Default.Person, contentDescription = "Cá nhân") },
+                    label = { Text("Cá nhân") }
+                )
+            }
+        }
+    ) { innerPadding ->
+        Box(modifier = Modifier.padding(innerPadding)) {
+            when (selectedTab) {
+                0 -> PatientHomeScreen()
+                1 -> LabResultsScreen()
+                2 -> BookingScreen()
+                3 -> PatientProfileScreen()
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PatientAppPreview() {
+    PatientApp()
+}
+
