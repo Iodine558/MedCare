@@ -27,9 +27,9 @@ class MainActivity : ComponentActivity() {
                 )
             } else {
                 when (userRole) {
-                    1 -> DoctorApp()
-                    2 -> AdminApp()
-                    else -> PatientApp()
+                    1 -> DoctorApp(onLogout = { isLoggedIn = false })
+                    2 -> AdminApp(onLogout = { isLoggedIn = false })
+                    else -> PatientApp(onLogout = { isLoggedIn = false })
                 }
             }
         }

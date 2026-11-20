@@ -20,7 +20,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun PatientHomeScreen() {
+fun PatientHomeScreen(
+    onProfileClick: () -> Unit = {}
+) {
     var med1Checked by remember { mutableStateOf(false) }
     var med2Checked by remember { mutableStateOf(false) }
 
@@ -72,14 +74,20 @@ fun PatientHomeScreen() {
                         )
                     }
                 }
-                Box(
-                    modifier = Modifier
-                        .size(32.dp)
-                        .clip(CircleShape)
-                        .background(Color(0xFF006194)),
-                    contentAlignment = Alignment.Center
+                Surface(
+                    onClick = onProfileClick,
+                    shape = CircleShape,
+                    color = Color(0xFF006194),
+                    contentColor = Color.White,
+                    modifier = Modifier.size(32.dp)
                 ) {
-                    Icon(Icons.Default.Person, contentDescription = null, tint = Color.White, modifier = Modifier.size(16.dp))
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = "Hồ sơ cá nhân",
+                            modifier = Modifier.size(16.dp)
+                        )
+                    }
                 }
             }
         }
@@ -92,6 +100,7 @@ fun PatientHomeScreen() {
         ) {
             // Patient Welcome Card
             Card(
+                onClick = onProfileClick,
                 shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(containerColor = Color.White),
                 elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),

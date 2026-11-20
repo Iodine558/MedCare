@@ -22,7 +22,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun LabResultsScreen() {
+fun LabResultsScreen(
+    onProfileClick: () -> Unit = {}
+) {
     var selectedFilter by remember { mutableStateOf(0) } // 0: Tất cả, 1: Xét nghiệm, 2: X-quang, 3: Nội soi
     val scrollState = rememberScrollState()
 
@@ -72,14 +74,20 @@ fun LabResultsScreen() {
                         )
                     }
                 }
-                Box(
-                    modifier = Modifier
-                        .size(32.dp)
-                        .clip(CircleShape)
-                        .background(Color(0xFF006194)),
-                    contentAlignment = Alignment.Center
+                Surface(
+                    onClick = onProfileClick,
+                    shape = CircleShape,
+                    color = Color(0xFF006194),
+                    contentColor = Color.White,
+                    modifier = Modifier.size(32.dp)
                 ) {
-                    Icon(Icons.Default.Person, contentDescription = null, tint = Color.White, modifier = Modifier.size(16.dp))
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = "Hồ sơ cá nhân",
+                            modifier = Modifier.size(16.dp)
+                        )
+                    }
                 }
             }
         }

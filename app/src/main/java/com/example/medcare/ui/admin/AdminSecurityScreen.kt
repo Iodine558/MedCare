@@ -20,7 +20,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun AdminSecurityScreen() {
+fun AdminSecurityScreen(
+    onProfileClick: () -> Unit = {}
+) {
     var enforce2FA by remember { mutableStateOf(true) }
     var autoLock by remember { mutableStateOf(true) }
     var ipWhitelisting by remember { mutableStateOf(true) }
@@ -64,14 +66,20 @@ fun AdminSecurityScreen() {
                 IconButton(onClick = { }) {
                     Icon(Icons.Default.Notifications, contentDescription = "Thông báo", tint = Color(0xFFBA1A1A))
                 }
-                Box(
-                    modifier = Modifier
-                        .size(32.dp)
-                        .clip(CircleShape)
-                        .background(Color(0xFF006194)),
-                    contentAlignment = Alignment.Center
+                Surface(
+                    onClick = onProfileClick,
+                    shape = CircleShape,
+                    color = Color(0xFF006194),
+                    contentColor = Color.White,
+                    modifier = Modifier.size(32.dp)
                 ) {
-                    Icon(Icons.Default.Person, contentDescription = null, tint = Color.White, modifier = Modifier.size(16.dp))
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = "Hồ sơ cá nhân",
+                            modifier = Modifier.size(16.dp)
+                        )
+                    }
                 }
             }
         }

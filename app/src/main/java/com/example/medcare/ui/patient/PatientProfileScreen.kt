@@ -1,6 +1,7 @@
 package com.example.medcare.ui.patient
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -20,8 +21,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun PatientProfileScreen() {
+fun PatientProfileScreen(
+    onProfileClick: () -> Unit = {},
+    onLogout: () -> Unit = {},
+    onHelpClick: (() -> Unit)? = null
+) {
+    var showInternalHelp by remember { mutableStateOf(false) }
+    val handleHelpClick = onHelpClick ?: { showInternalHelp = true }
+
+    if (showInternalHelp) {
+        PatientHelpScreen(onBack = { showInternalHelp = false })
+        return
+    }
+
     val scrollState = rememberScrollState()
+    var showLogoutDialog by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -69,14 +83,20 @@ fun PatientProfileScreen() {
                         )
                     }
                 }
-                Box(
-                    modifier = Modifier
-                        .size(32.dp)
-                        .clip(CircleShape)
-                        .background(Color(0xFF006194)),
-                    contentAlignment = Alignment.Center
+                Surface(
+                    onClick = onProfileClick,
+                    shape = CircleShape,
+                    color = Color(0xFF006194),
+                    contentColor = Color.White,
+                    modifier = Modifier.size(32.dp)
                 ) {
-                    Icon(Icons.Default.Person, contentDescription = null, tint = Color.White, modifier = Modifier.size(16.dp))
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = "Hồ sơ cá nhân",
+                            modifier = Modifier.size(16.dp)
+                        )
+                    }
                 }
             }
         }
@@ -222,7 +242,14 @@ fun PatientProfileScreen() {
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Column {
-                        ProfileMenuItem(icon = Icons.Default.Help, title = "Trung tâm trợ giúp", iconBg = Color(0xFFEAEDFF), iconTint = Color(0xFF006194))
+                        ProfileMenuItem(
+                            icon = Icons.Default.Help,
+                            title = "Hướng dẫn sử dụng & Trợ giúp",
+                            subtitle = "Quy trình khám, tra cứu CLS & hỏi đáp",
+                            iconBg = Color(0xFFEAEDFF),
+                            iconTint = Color(0xFF006194),
+                            onClick = handleHelpClick
+                        )
                         HorizontalDivider(color = Color(0xFFF2F3FF))
                         ProfileMenuItem(icon = Icons.Default.SupportAgent, title = "Liên hệ hỗ trợ", iconBg = Color(0xFFEAEDFF), iconTint = Color(0xFF006194))
                         HorizontalDivider(color = Color(0xFFF2F3FF))
@@ -234,7 +261,7 @@ fun PatientProfileScreen() {
             // Sign out
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Button(
-                    onClick = { },
+                    onClick = { showLogoutDialog = true },
                     colors = ButtonDefaults.buttonColors(containerColor = Color.White),
                     shape = RoundedCornerShape(12.dp),
                     modifier = Modifier.fillMaxWidth()
@@ -251,6 +278,35 @@ fun PatientProfileScreen() {
             }
         }
     }
+
+    if (showLogoutDialog) {
+        AlertDialog(
+            onDismissRequest = { showLogoutDialog = false },
+            title = {
+                Text("Đăng xuất", fontWeight = FontWeight.Bold)
+            },
+            text = {
+                Text("Bạn có chắc chắn muốn đăng xuất khỏi ứng dụng MedCare?")
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showLogoutDialog = false
+                        onLogout()
+                    }
+                ) {
+                    Text("Đăng xuất", color = Color(0xFFBA1A1A), fontWeight = FontWeight.Bold)
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { showLogoutDialog = false }
+                ) {
+                    Text("Hủy", color = Color(0xFF3F4850))
+                }
+            }
+        )
+    }
 }
 
 @Composable
@@ -259,11 +315,13 @@ fun ProfileMenuItem(
     title: String,
     subtitle: String? = null,
     iconBg: Color? = null,
-    iconTint: Color = Color(0xFF3F4850)
+    iconTint: Color = Color(0xFF3F4850),
+    onClick: () -> Unit = {}
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable(onClick = onClick)
             .padding(16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
