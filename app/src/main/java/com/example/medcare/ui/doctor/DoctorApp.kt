@@ -11,8 +11,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun DoctorApp() {
-    var selectedTab by remember { mutableStateOf(0) } // 0: Hồ sơ BN, 1: Khám bệnh, 2: Kê đơn & CLS, 3: Báo cáo & Lịch
+fun DoctorApp(
+    onLogout: () -> Unit = {}
+) {
+    var selectedTab by remember { mutableStateOf(0) } // 0: Hồ sơ BN, 1: Khám bệnh, 2: Kê đơn & CLS, 3: Báo cáo & Lịch, 4: Cá nhân
 
     Scaffold(
         bottomBar = {
@@ -44,15 +46,23 @@ fun DoctorApp() {
                     icon = { Icon(Icons.Default.BarChart, contentDescription = "Báo cáo & Lịch") },
                     label = { Text("Báo cáo & Lịch") }
                 )
+                NavigationBarItem(
+                    selected = selectedTab == 4,
+                    onClick = { selectedTab = 4 },
+                    icon = { Icon(Icons.Default.Person, contentDescription = "Cá nhân") },
+                    label = { Text("Cá nhân") }
+                )
             }
         }
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
+            val navigateToProfile = { selectedTab = 4 }
             when (selectedTab) {
-                0 -> DoctorPatientRecordsScreen()
-                1 -> DoctorExamScreen()
-                2 -> DoctorPrescriptionScreen()
-                3 -> DoctorReportsScreen()
+                0 -> DoctorPatientRecordsScreen(onProfileClick = navigateToProfile)
+                1 -> DoctorExamScreen(onProfileClick = navigateToProfile)
+                2 -> DoctorPrescriptionScreen(onProfileClick = navigateToProfile)
+                3 -> DoctorReportsScreen(onProfileClick = navigateToProfile)
+                4 -> DoctorProfileScreen(onProfileClick = navigateToProfile, onLogout = onLogout)
             }
         }
     }

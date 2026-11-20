@@ -20,7 +20,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun DoctorExamScreen() {
+fun DoctorExamScreen(
+    onProfileClick: () -> Unit = {}
+) {
     var selectedTab by remember { mutableStateOf(0) } // 0: Lịch sử khám, 1: Dịch vụ, 2: Đơn thuốc, 3: Tóm tắt bệnh án
     val scrollState = rememberScrollState()
 
@@ -60,14 +62,20 @@ fun DoctorExamScreen() {
                 IconButton(onClick = { }) {
                     Icon(Icons.Default.NotificationsActive, contentDescription = "Thông báo khẩn cấp", tint = Color(0xFFBA1A1A))
                 }
-                Box(
-                    modifier = Modifier
-                        .size(32.dp)
-                        .clip(CircleShape)
-                        .background(Color(0xFF006194)),
-                    contentAlignment = Alignment.Center
+                Surface(
+                    onClick = onProfileClick,
+                    shape = CircleShape,
+                    color = Color(0xFF006194),
+                    contentColor = Color.White,
+                    modifier = Modifier.size(32.dp)
                 ) {
-                    Icon(Icons.Default.Person, contentDescription = null, tint = Color.White, modifier = Modifier.size(16.dp))
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = "Hồ sơ cá nhân",
+                            modifier = Modifier.size(16.dp)
+                        )
+                    }
                 }
             }
         }

@@ -11,8 +11,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun AdminApp() {
-    var selectedTab by remember { mutableStateOf(0) } // 0: Tài khoản, 1: Audit Log, 2: Bảo mật
+fun AdminApp(
+    onLogout: () -> Unit = {}
+) {
+    var selectedTab by remember { mutableStateOf(0) } // 0: Tài khoản, 1: Audit Log, 2: Bảo mật, 3: Cá nhân
 
     Scaffold(
         bottomBar = {
@@ -38,14 +40,22 @@ fun AdminApp() {
                     icon = { Icon(Icons.Default.Security, contentDescription = "Bảo mật") },
                     label = { Text("Bảo mật") }
                 )
+                NavigationBarItem(
+                    selected = selectedTab == 3,
+                    onClick = { selectedTab = 3 },
+                    icon = { Icon(Icons.Default.Person, contentDescription = "Cá nhân") },
+                    label = { Text("Cá nhân") }
+                )
             }
         }
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
+            val navigateToProfile = { selectedTab = 3 }
             when (selectedTab) {
-                0 -> AdminAccountsScreen()
-                1 -> AdminAuditLogScreen()
-                2 -> AdminSecurityScreen()
+                0 -> AdminAccountsScreen(onProfileClick = navigateToProfile)
+                1 -> AdminAuditLogScreen(onProfileClick = navigateToProfile)
+                2 -> AdminSecurityScreen(onProfileClick = navigateToProfile)
+                3 -> AdminProfileScreen(onProfileClick = navigateToProfile, onLogout = onLogout)
             }
         }
     }

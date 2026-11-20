@@ -21,7 +21,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun BookingScreen() {
+fun BookingScreen(
+    onProfileClick: () -> Unit = {}
+) {
     var selectedExamType by remember { mutableStateOf(0) } // 0: Theo Bác sĩ, 1: Chuyên khoa, 2: BHYT
     var selectedSpecialty by remember { mutableStateOf(0) } // 0: Nội Hô hấp, 1: Tim mạch, ...
     var selectedDate by remember { mutableStateOf(4) } // Index 4 is T6 18 (Selected)
@@ -76,14 +78,20 @@ fun BookingScreen() {
                         )
                     }
                 }
-                Box(
-                    modifier = Modifier
-                        .size(32.dp)
-                        .clip(CircleShape)
-                        .background(Color(0xFF006194)),
-                    contentAlignment = Alignment.Center
+                Surface(
+                    onClick = onProfileClick,
+                    shape = CircleShape,
+                    color = Color(0xFF006194),
+                    contentColor = Color.White,
+                    modifier = Modifier.size(32.dp)
                 ) {
-                    Icon(Icons.Default.Person, contentDescription = null, tint = Color.White, modifier = Modifier.size(16.dp))
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = "Hồ sơ cá nhân",
+                            modifier = Modifier.size(16.dp)
+                        )
+                    }
                 }
             }
         }

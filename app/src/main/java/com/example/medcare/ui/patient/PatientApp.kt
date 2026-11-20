@@ -5,13 +5,16 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun PatientApp() {
+fun PatientApp(
+    onLogout: () -> Unit = {}
+) {
     var selectedTab by remember { mutableStateOf(0) } // 0: Home, 1: Lab, 2: Booking, 3: Profile
 
     Scaffold(
@@ -48,12 +51,20 @@ fun PatientApp() {
         }
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
+            val navigateToProfile = { selectedTab = 3 }
             when (selectedTab) {
-                0 -> PatientHomeScreen()
-                1 -> LabResultsScreen()
-                2 -> BookingScreen()
-                3 -> PatientProfileScreen()
+                0 -> PatientHomeScreen(onProfileClick = navigateToProfile)
+                1 -> LabResultsScreen(onProfileClick = navigateToProfile)
+                2 -> BookingScreen(onProfileClick = navigateToProfile)
+                3 -> PatientProfileScreen(onProfileClick = navigateToProfile, onLogout = onLogout)
             }
+
+            // Floating AI Chatbox — always visible above all tabs
+            AiChatBox(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(end = 16.dp, bottom = 16.dp)
+            )
         }
     }
 }
