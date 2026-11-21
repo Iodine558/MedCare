@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -463,15 +464,27 @@ fun ExamTypeButton(title: String, icon: androidx.compose.ui.graphics.vector.Imag
         color = if (selected) Color(0xFF006194) else Color.White,
         shape = RoundedCornerShape(12.dp),
         shadowElevation = 1.dp,
-        modifier = modifier
+        modifier = modifier.height(84.dp)
     ) {
         Column(
-            modifier = Modifier.padding(12.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 6.dp, vertical = 10.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.Center
         ) {
             Icon(icon, contentDescription = null, tint = if (selected) Color.White else Color(0xFF006194), modifier = Modifier.size(24.dp))
-            Text(title, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = if (selected) Color.White else Color(0xFF131B2E), textAlign = androidx.compose.ui.text.style.TextAlign.Center)
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                title,
+                fontSize = 11.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = if (selected) Color.White else Color(0xFF131B2E),
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                maxLines = 1,
+                softWrap = false,
+                overflow = TextOverflow.Ellipsis
+            )
         }
     }
 }

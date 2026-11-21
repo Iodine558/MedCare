@@ -1,6 +1,7 @@
 package com.example.medcare.ui.patient
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -17,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -149,8 +151,10 @@ fun LabResultsScreen(
             }
 
             // Filter Chips
+            val filterChipScrollState = rememberScrollState()
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .horizontalScroll(filterChipScrollState),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 FilterChipItem(title = "Tất cả", count = 4, selected = selectedFilter == 0, onClick = { selectedFilter = 0 })
@@ -334,7 +338,15 @@ fun FilterChipItem(title: String, count: Int, selected: Boolean, onClick: () -> 
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(6.dp)
         ) {
-            Text(title, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = if (selected) Color.White else Color(0xFF3F4850))
+            Text(
+                text = title,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = if (selected) Color.White else Color(0xFF3F4850),
+                maxLines = 1,
+                softWrap = false,
+                overflow = TextOverflow.Ellipsis
+            )
             Surface(
                 color = if (selected) Color.White.copy(alpha = 0.2f) else Color(0xFFDAE2FD),
                 shape = RoundedCornerShape(99.dp)
@@ -372,7 +384,11 @@ fun LabResultCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.weight(1f)
+                ) {
                     Box(
                         modifier = Modifier
                             .size(44.dp)
@@ -382,16 +398,40 @@ fun LabResultCard(
                     ) {
                         Icon(Icons.Default.Assignment, contentDescription = null, tint = Color(0xFF006194))
                     }
-                    Column {
-                        Text(title, fontSize = 18.sp, fontWeight = FontWeight.SemiBold, color = Color(0xFF131B2E))
-                        Text(subtitle, fontSize = 13.sp, color = Color(0xFF3F4850))
+                    Column(
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(
+                            title,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color(0xFF131B2E),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Text(
+                            subtitle,
+                            fontSize = 13.sp,
+                            color = Color(0xFF3F4850),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
                     }
                 }
                 Surface(
                     color = statusBg,
-                    shape = RoundedCornerShape(99.dp)
+                    shape = RoundedCornerShape(99.dp),
+                    modifier = Modifier.padding(start = 8.dp)
                 ) {
-                    Text(status, color = statusColor, fontSize = 11.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp))
+                    Text(
+                        status,
+                        color = statusColor,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        maxLines = 1,
+                        softWrap = false,
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+                    )
                 }
             }
 

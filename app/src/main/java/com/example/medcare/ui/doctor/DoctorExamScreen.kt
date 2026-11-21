@@ -1,6 +1,7 @@
 package com.example.medcare.ui.doctor
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -15,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -227,8 +229,10 @@ fun DoctorExamScreen(
             }
 
             // Sub-tabs: Lịch sử khám, Dịch vụ, Đơn thuốc, Tóm tắt bệnh án
+            val doctorExamTabScrollState = rememberScrollState()
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .horizontalScroll(doctorExamTabScrollState),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 DoctorSubTab(title = "Lịch sử khám", selected = selectedTab == 0, onClick = { selectedTab = 0 })
@@ -353,6 +357,9 @@ fun DoctorSubTab(title: String, selected: Boolean, onClick: () -> Unit) {
             fontSize = 12.sp,
             fontWeight = FontWeight.SemiBold,
             color = if (selected) Color.White else Color(0xFF006194),
+            maxLines = 1,
+            softWrap = false,
+            overflow = TextOverflow.Ellipsis,
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
         )
     }

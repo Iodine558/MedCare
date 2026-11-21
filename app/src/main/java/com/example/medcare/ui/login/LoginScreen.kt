@@ -20,6 +20,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.medcare.ui.theme.MedCareTheme
 
 @Composable
 fun LoginScreen(onLoginSuccess: (Int) -> Unit = {}) {
@@ -386,6 +387,8 @@ fun RoleTab(title: String, icon: androidx.compose.ui.graphics.vector.ImageVector
 @Preview(showBackground = true)
 @Composable
 fun LoginScreenPreview() {
-    LoginScreen()
+    MedCareTheme {
+        LoginScreen()
+    }
 }
 

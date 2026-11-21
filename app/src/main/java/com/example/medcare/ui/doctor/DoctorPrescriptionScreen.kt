@@ -1,6 +1,7 @@
 package com.example.medcare.ui.doctor
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -15,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -105,7 +107,11 @@ fun DoctorPrescriptionScreen(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.weight(1f)
+                        ) {
                             Box(
                                 modifier = Modifier
                                     .size(40.dp)
@@ -115,19 +121,55 @@ fun DoctorPrescriptionScreen(
                             ) {
                                 Text("TA", color = Color(0xFF001D31), fontWeight = FontWeight.SemiBold, fontSize = 18.sp)
                             }
-                            Column {
-                                Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
-                                    Text("Trần Văn An", fontSize = 18.sp, fontWeight = FontWeight.SemiBold, color = Color(0xFF131B2E))
-                                    Text("54 tuổi (Nam)", fontSize = 12.sp, color = Color(0xFF3F4850))
+                            Column(
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                Row(
+                                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Text(
+                                        "Trần Văn An",
+                                        fontSize = 18.sp,
+                                        fontWeight = FontWeight.SemiBold,
+                                        color = Color(0xFF131B2E),
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
+                                        modifier = Modifier.weight(1f, fill = false)
+                                    )
+                                    Text(
+                                        "54 tuổi (Nam)",
+                                        fontSize = 12.sp,
+                                        color = Color(0xFF3F4850),
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
                                 }
-                                Text("Mã BN: #MED-88942 • Khoa Nội Hô hấp • Phòng 402", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = Color(0xFF3F4850))
+                                Text(
+                                    "Mã BN: #MED-88942 • Khoa Nội Hô hấp • Phòng 402",
+                                    fontSize = 11.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFF3F4850),
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
                             }
                         }
                         Surface(
                             color = Color(0xFF86F2E4),
-                            shape = RoundedCornerShape(99.dp)
+                            shape = RoundedCornerShape(99.dp),
+                            modifier = Modifier.padding(start = 8.dp)
                         ) {
-                            Text("BHYT 80%", color = Color(0xFF006F66), fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp))
+                            Text(
+                                "BHYT 80%",
+                                color = Color(0xFF006F66),
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Bold,
+                                maxLines = 1,
+                                softWrap = false,
+                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+                            )
                         }
                     }
 
@@ -217,7 +259,12 @@ fun DoctorPrescriptionScreen(
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                val drugFilterScrollState = rememberScrollState()
+                Row(
+                    modifier = Modifier
+                        .horizontalScroll(drugFilterScrollState),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
                     DrugFilterChip(title = "Tất cả", selected = selectedDrugFilter == 0, onClick = { selectedDrugFilter = 0 })
                     DrugFilterChip(title = "Dạng viên", selected = selectedDrugFilter == 1, onClick = { selectedDrugFilter = 1 })
                     DrugFilterChip(title = "Dạng gói", selected = selectedDrugFilter == 2, onClick = { selectedDrugFilter = 2 })
@@ -319,6 +366,9 @@ fun DrugFilterChip(title: String, selected: Boolean, onClick: () -> Unit) {
             fontSize = 12.sp,
             fontWeight = FontWeight.SemiBold,
             color = if (selected) Color.White else Color(0xFF3F4850),
+            maxLines = 1,
+            softWrap = false,
+            overflow = TextOverflow.Ellipsis,
             modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp)
         )
     }
@@ -364,9 +414,12 @@ fun PrescribedDrugCard(number: String, name: String, type: String, quantity: Str
                         }
                         Text(type, fontSize = 12.sp, color = Color(0xFF3F4850))
                     }
-                    Column(horizontalAlignment = Alignment.End) {
-                        Text(quantity.substringBefore(" "), fontSize = 22.sp, fontWeight = FontWeight.Bold, color = Color(0xFF006194))
-                        Text(quantity.substringAfter(" "), fontSize = 11.sp, color = Color(0xFF3F4850))
+                    Row(
+                        verticalAlignment = Alignment.Bottom,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Text(quantity.substringBefore(" "), fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color(0xFF006194))
+                        Text(quantity.substringAfter(" "), fontSize = 12.sp, color = Color(0xFF3F4850), modifier = Modifier.padding(bottom = 2.dp))
                     }
                 }
 

@@ -11,6 +11,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
+import com.example.medcare.ui.theme.MedCareTheme
+
 @Composable
 fun PatientApp(
     onLogout: () -> Unit = {}
@@ -72,6 +74,8 @@ fun PatientApp(
 @Preview(showBackground = true)
 @Composable
 fun PatientAppPreview() {
-    PatientApp()
+    MedCareTheme {
+        PatientApp()
+    }
 }
 
