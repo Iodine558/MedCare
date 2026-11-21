@@ -1,6 +1,7 @@
 package com.example.medcare.ui.doctor
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -15,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -122,8 +124,10 @@ fun DoctorPatientRecordsScreen(
             }
 
             // Quick Status Filter Pills
+            val doctorFilterScrollState = rememberScrollState()
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .horizontalScroll(doctorFilterScrollState),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 DoctorFilterChip(title = "Tất cả (1,248)", selected = selectedFilter == 0, onClick = { selectedFilter = 0 })
@@ -248,7 +252,10 @@ fun DoctorFilterChip(title: String, selected: Boolean, onClick: () -> Unit, isAl
                 title,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.SemiBold,
-                color = if (selected) Color.White else if (isAlert) Color(0xFF93000A) else Color(0xFF3F4850)
+                color = if (selected) Color.White else if (isAlert) Color(0xFF93000A) else Color(0xFF3F4850),
+                maxLines = 1,
+                softWrap = false,
+                overflow = TextOverflow.Ellipsis
             )
         }
     }
@@ -293,7 +300,11 @@ fun DoctorPatientCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.weight(1f)
+                ) {
                     Box(
                         modifier = Modifier
                             .size(48.dp)
@@ -303,25 +314,72 @@ fun DoctorPatientCard(
                     ) {
                         Icon(Icons.Default.Person, contentDescription = null, tint = Color(0xFF006194))
                     }
-                    Column {
-                        Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
-                            Text(name, fontSize = 18.sp, fontWeight = FontWeight.SemiBold, color = Color(0xFF131B2E))
-                            Text("($ageGender)", fontSize = 13.sp, color = Color(0xFF3F4850))
+                    Column(
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(6.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(
+                                name,
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = Color(0xFF131B2E),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier.weight(1f, fill = false)
+                            )
+                            Text(
+                                "($ageGender)",
+                                fontSize = 13.sp,
+                                color = Color(0xFF3F4850),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
                         }
-                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                            Text(id, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = Color(0xFF006194))
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(
+                                id,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = Color(0xFF006194),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
                             if (bhytInfo != null) {
                                 Text("•", color = Color(0xFF707881))
-                                Text(bhytInfo, fontSize = 13.sp, color = Color(0xFF3F4850))
+                                Text(
+                                    bhytInfo,
+                                    fontSize = 13.sp,
+                                    color = Color(0xFF3F4850),
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    modifier = Modifier.weight(1f, fill = false)
+                                )
                             }
                         }
                     }
                 }
                 Surface(
                     color = statusBg,
-                    shape = RoundedCornerShape(99.dp)
+                    shape = RoundedCornerShape(99.dp),
+                    modifier = Modifier.padding(start = 8.dp)
                 ) {
-                    Text(status, color = statusColor, fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp))
+                    Text(
+                        status,
+                        color = statusColor,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 1,
+                        softWrap = false,
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                    )
                 }
             }
 

@@ -11,6 +11,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.medcare.ui.theme.MedCareTheme
 import androidx.compose.ui.unit.sp
 
 @Composable
@@ -103,6 +104,7 @@ fun AdminApp(
 @Preview(showBackground = true)
 @Composable
 fun AdminAppPreview() {
-    AdminApp()
+    MedCareTheme {
+        AdminApp()
+    }
 }
-

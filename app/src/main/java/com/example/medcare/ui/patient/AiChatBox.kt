@@ -9,6 +9,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -26,11 +27,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlin.math.roundToInt
 
 // --- Data model ---------------------------------------------------------
 
@@ -63,8 +67,12 @@ fun AiChatBox(
     var isExpanded by remember { mutableStateOf(false) }
     var inputText by remember { mutableStateOf("") }
     val messages = remember { mutableStateListOf(*sampleMessages.toTypedArray()) }
-    var nextId by remember { mutableStateOf(sampleMessages.size) }
+    var nextId by remember { mutableIntStateOf(sampleMessages.size) }
     val listState = rememberLazyListState()
+
+    // Floating position offset for dragging chat box
+    var offsetX by remember { mutableFloatStateOf(0f) }
+    var offsetY by remember { mutableFloatStateOf(0f) }
 
     // Scroll to bottom whenever messages change
     LaunchedEffect(messages.size) {
@@ -74,7 +82,8 @@ fun AiChatBox(
     }
 
     Box(
-        modifier = modifier,
+        modifier = modifier
+            .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) },
         contentAlignment = Alignment.BottomEnd
     ) {
         // ── Chat panel ──────────────────────────────────────────────────
@@ -97,7 +106,7 @@ fun AiChatBox(
             ) {
                 Column(modifier = Modifier.fillMaxSize()) {
 
-                    // Header
+                    // Header (Draggable)
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -106,63 +115,85 @@ fun AiChatBox(
                                     listOf(Color(0xFF006194), Color(0xFF00897B))
                                 )
                             )
-                            .padding(horizontal = 16.dp, vertical = 12.dp)
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(10.dp),
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            // AI avatar
-                            Box(
-                                modifier = Modifier
-                                    .size(36.dp)
-                                    .clip(CircleShape)
-                                    .background(Color.White.copy(alpha = 0.2f)),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.AutoAwesome,
-                                    contentDescription = null,
-                                    tint = Color.White,
-                                    modifier = Modifier.size(20.dp)
-                                )
-                            }
-
-                            Column(modifier = Modifier.weight(1f)) {
-                                Text(
-                                    text = "MedCare AI",
-                                    color = Color.White,
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 15.sp
-                                )
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                                ) {
-                                    Box(
-                                        modifier = Modifier
-                                            .size(6.dp)
-                                            .clip(CircleShape)
-                                            .background(Color(0xFF69F0AE))
-                                    )
-                                    Text(
-                                        text = "Trực tuyến • Phản hồi ngay",
-                                        color = Color.White.copy(alpha = 0.85f),
-                                        fontSize = 11.sp
-                                    )
+                            .pointerInput(Unit) {
+                                detectDragGestures { change, dragAmount ->
+                                    change.consume()
+                                    offsetX += dragAmount.x
+                                    offsetY += dragAmount.y
                                 }
                             }
+                            .padding(horizontal = 16.dp, vertical = 10.dp)
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            // Drag handle indicator
+                            Box(
+                                modifier = Modifier
+                                    .width(36.dp)
+                                    .height(4.dp)
+                                    .clip(CircleShape)
+                                    .background(Color.White.copy(alpha = 0.4f))
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
 
-                            IconButton(
-                                onClick = { isExpanded = false },
-                                modifier = Modifier.size(32.dp)
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                                modifier = Modifier.fillMaxWidth()
                             ) {
-                                Icon(
-                                    imageVector = Icons.Default.KeyboardArrowDown,
-                                    contentDescription = "Đóng chat",
-                                    tint = Color.White
-                                )
+                                // AI avatar
+                                Box(
+                                    modifier = Modifier
+                                        .size(36.dp)
+                                        .clip(CircleShape)
+                                        .background(Color.White.copy(alpha = 0.2f)),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.AutoAwesome,
+                                        contentDescription = null,
+                                        tint = Color.White,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                }
+
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text(
+                                        text = "MedCare AI",
+                                        color = Color.White,
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 15.sp
+                                    )
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                    ) {
+                                        Box(
+                                            modifier = Modifier
+                                                .size(6.dp)
+                                                .clip(CircleShape)
+                                                .background(Color(0xFF69F0AE))
+                                        )
+                                        Text(
+                                            text = "Trực tuyến • Phản hồi ngay",
+                                            color = Color.White.copy(alpha = 0.85f),
+                                            fontSize = 11.sp
+                                        )
+                                    }
+                                }
+
+                                IconButton(
+                                    onClick = { isExpanded = false },
+                                    modifier = Modifier.size(32.dp)
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.KeyboardArrowDown,
+                                        contentDescription = "Đóng chat",
+                                        tint = Color.White
+                                    )
+                                }
                             }
                         }
                     }
@@ -316,7 +347,7 @@ fun AiChatBox(
             }
         }
 
-        // ── FAB ─────────────────────────────────────────────────────────
+        // ── FAB (Draggable) ─────────────────────────────────────────────
         val fabSize by animateDpAsState(
             targetValue = if (isExpanded) 48.dp else 56.dp,
             animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
@@ -337,7 +368,14 @@ fun AiChatBox(
                     Brush.radialGradient(
                         listOf(Color(0xFF00A0C8), Color(0xFF006194))
                     )
-                ),
+                )
+                .pointerInput(Unit) {
+                    detectDragGestures { change, dragAmount ->
+                        change.consume()
+                        offsetX += dragAmount.x
+                        offsetY += dragAmount.y
+                    }
+                },
             contentAlignment = Alignment.Center
         ) {
             FloatingActionButton(
