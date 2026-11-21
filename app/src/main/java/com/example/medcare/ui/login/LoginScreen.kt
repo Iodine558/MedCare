@@ -36,6 +36,7 @@ fun LoginScreen(onLoginSuccess: (Int) -> Unit = {}) {
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFFAF8FF))
+            .statusBarsPadding()
             .verticalScroll(scrollState)
             .padding(bottom = 24.dp)
     ) {
